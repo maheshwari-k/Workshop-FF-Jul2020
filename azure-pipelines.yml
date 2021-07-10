@@ -1,0 +1,26 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: TerraformTaskV1@0
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: "Part-I-Tools/Azure Pipelines/VM"
+    commandOptions: '-var="subscriptionID=$(subscriptionID)" -var="network_interface_id=$(network_interface_id)"'
+    backendServiceArm: 'your_subscription_name_and_id'
+    backendAzureRmResourceGroupName: 'NoBSDevOps'
+    backendAzureRmStorageAccountName: 'nobsstorage'
+    backendAzureRmContainerName: 'nobscontainer'
+    backendAzureRmKey: 'tf/terraform.tfstate'
+
+- task: TerraformTaskV1@0
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: 'Part-I-Tools/Azure Pipelines/VM'
+    commandOptions: '-var="subscriptionID=$(subscriptionID)" -var="network_interface_id=$(network_interface_id)"'
+    environmentServiceNameAzureRM: 'your_subscription_name_and_id'
